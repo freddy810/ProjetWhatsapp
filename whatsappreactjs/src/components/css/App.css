@@ -1,0 +1,18 @@
+.app {
+  background-color: #0B141A;
+  /* Même fond que WhatsApp Web */
+  font-family: 'Segoe UI', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.row.h-100 {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.sidebar {
+  border-right: 1px solid #2A3942;
+}

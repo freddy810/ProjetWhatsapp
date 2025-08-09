@@ -1,0 +1,427 @@
+.sidebar {
+    background-color: #161717;
+    /* Fond plus foncé */
+    color: white;
+}
+
+/* Zone scrollable pour les discussions */
+.sidebar__chats {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 180px);
+    /* Ajuste selon la hauteur du header et de la recherche */
+    padding-bottom: 10px;
+}
+
+.sidebar__chats::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar__chats::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+
+.sidebar__left {
+    width: 60px;
+    background-color: #202121;
+    color: #abafaf;
+}
+
+.sidebar__icon {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.sidebar__icon:hover {
+    color: white;
+}
+
+.sidebar__header {
+    background-color: #161717;
+    /* Couleur de la barre du haut */
+    color: white;
+    width: 100%;
+}
+
+.btn-active {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #454646;
+    border-radius: 25px;
+    background-color: #103529;
+    color: #abafaf;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-active:hover {
+    background-color: #103529;
+    color: #abafaf;
+}
+
+.btn-non-active {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid #454646;
+    border-radius: 25px;
+    color: #abafaf;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-non-active:hover {
+    background-color: #2e2f2f;
+    color: #abafaf;
+}
+
+.chat:hover {
+    background-color: #2e2f2f;
+    cursor: pointer;
+}
+
+.sidebar__search input {
+    background-color: #2e2f2f;
+    border: none;
+    color: white;
+    border-radius: 20px;
+}
+
+.sidebar__search input:focus {
+    background-color: #2e2f2f;
+    border: none;
+    color: white;
+}
+
+.sidebar__search input::placeholder {
+    color: #abafaf;
+}
+
+.last_chat {
+    color: #abafaf;
+}
+
+.icon {
+    color: #abafaf;
+    transition: color 0.3s;
+}
+
+.icon:hover {
+    color: white;
+    cursor: pointer;
+}
+
+.search-text-icon {
+    position: absolute;
+    top: 47%;
+    left: 20px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    padding: 4px;
+    color: #abafaf;
+    pointer-events: none;
+}
+
+.tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: max-content;
+    max-width: 150px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 6px 10px;
+    position: absolute;
+    z-index: 10;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    font-size: 13px;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.tooltip-text4 {
+    visibility: hidden;
+    width: max-content;
+    max-width: 150px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 6px 10px;
+    position: absolute;
+    z-index: 10;
+    bottom: -30px;
+    left: 140%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    font-size: 13px;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.tooltip-text3 {
+    visibility: hidden;
+    width: max-content;
+    max-width: 150px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 6px 10px;
+    position: absolute;
+    z-index: 10;
+    bottom: -10px;
+    left: 140%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    font-size: 13px;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.tooltip-wrapper:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tooltip-wrapper:hover .tooltip-text4 {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tooltip-wrapper:hover .tooltip-text3 {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.chat-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.chat-date {
+    color: #abafaf;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+}
+
+.badge-unread {
+    background-color: #25D366;
+    color: black;
+    font-size: 12px;
+    padding: 2px 6px;
+    margin-right: 20px;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.badge-new-msg {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #25D366;
+    color: black;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 12px;
+    font-weight: bold;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1;
+}
+
+/* Overlay fond sombre semi-transparent pour modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal confirmation déconnexion */
+.modal-content.logout-confirm {
+    background-color: #2e2f2f;
+    color: white;
+    padding: 20px 25px;
+    border-radius: 10px;
+    width: 320px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    text-align: center;
+}
+
+.modal-content.logout-confirm p {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.modal-content.logout-confirm button {
+    min-width: 70px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.modal-content.logout-confirm .btn-secondary {
+    background-color: #555;
+    color: white;
+}
+
+.modal-content.logout-confirm .btn-secondary:hover {
+    background-color: #777;
+}
+
+.modal-content.logout-confirm .btn-danger {
+    background-color: #d9534f;
+    color: white;
+}
+
+.modal-content.logout-confirm .btn-danger:hover {
+    background-color: #c9302c;
+}
+
+/* Conteneur relatif pour bouton paramètres + modale */
+.sidebar__settings-container {
+    position: relative;
+}
+
+/* Modal positionnée à droite du bouton paramètres */
+.modal-content.small-left {
+    position: absolute;
+    top: 0%;
+    left: 100%;
+    transform: translateY(-50%);
+    background-color: #2e2f2f;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 220px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Styles pour les éléments cliquables */
+.clickable {
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 6px 8px;
+    border-radius: 5px;
+}
+
+.clickable:hover {
+    background-color: #454646;
+}
+
+/* Styles modal Modifier Profil */
+.edit-profile-modal {
+    background: #202121;
+    padding: 25px 30px;
+    border-radius: 10px;
+    color: white;
+    max-width: 350px;
+    width: 90%;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.edit-profile-header img.chat__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #06d9b2;
+}
+
+.edit-profile-header h5 {
+    color: white;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.edit-profile-modal ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.edit-profile-modal ul li {
+    margin-bottom: 6px;
+}
+
+.edit-profile-modal .btn-primary {
+    background-color: #0d6efd;
+    border: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-profile-modal .btn-primary:hover {
+    background-color: #084cdf;
+}
+
+.edit-contact-modal .btn-primary {
+    background-color: #0d6efd;
+    border: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.edit-contact-modal .btn-primary:hover {
+    background-color: #084cdf;
+}
+
+.edit-contact-modal .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.edit-contact-modal .btn-secondary:hover {
+    background-color: #565e64;
+}
+
+.edit-profile-modal form .form-control {
+    background-color: #2e2f2f !important;
+    color: #ffffff !important;
+    border: 1px solid #444 !important;
+}
+
+.edit-profile-modal form .form-control::placeholder {
+    color: #bbbbbb;
+}
