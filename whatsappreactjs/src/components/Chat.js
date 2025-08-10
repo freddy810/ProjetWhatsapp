@@ -1,50 +1,50 @@
-// Import des dépendances React et hooks nécessaires
 import React, { useState, useRef, useEffect } from 'react';
-// Import du fichier CSS spécifique au chat
 import './css/Chat.css';
 
-// Import des icônes utilisées dans l'interface
 import { FiPaperclip } from 'react-icons/fi';
 import { BsEmojiSmile, BsSearch } from 'react-icons/bs';
 import { MdVideoCall, MdMoreVert, MdEdit, MdBlock, MdReportProblem, MdDelete } from 'react-icons/md';
 
-// Import des modaux utilisés dans ce composant
 import EditContactModal from './modals/EditContactModal';
 import ConfirmBlockModal from './modals/ConfirmBlockModal';
 import ConfirmSignal from './modals/ConfirmSignal';
 import ConfirmSupprContact from './modals/ConfirmSupprContact';
 import EditMessageModal from './modals/EditMessageModal';
-import ConfirmDeleteMessage from './modals/ConfirmDeleteMessage'; // ✅ Nouveau modal suppression message
+import ConfirmDeleteMessage from './modals/ConfirmDeleteMessage';
 
 function Chat() {
-    // États pour gérer l'ouverture/fermeture des différents menus et modaux
-    const [menuOpen, setMenuOpen] = useState(false); // Menu options contact
-    const [showEditContact, setShowEditContact] = useState(false); // Modal éditer contact
-    const [showConfirmBlock, setShowConfirmBlock] = useState(false); // Confirmation blocage contact
-    const [showConfirmSignal, setShowConfirmSignal] = useState(false); // Confirmation signalement contact
-    const [showConfirmDelete, setShowConfirmDelete] = useState(false); // Confirmation suppression contact
-    const [showMessageMenu, setShowMessageMenu] = useState(false); // Menu options message
-    const [showSearchInput, setShowSearchInput] = useState(false); // Affichage barre recherche
-    const [searchQuery, setSearchQuery] = useState(''); // Texte de recherche
-    const [showConfirmDeleteMessage, setShowConfirmDeleteMessage] = useState(false); // Confirmation suppression message
-    const [showEditMessageModal, setShowEditMessageModal] = useState(false); // Modal édition message
-    const [editedMessage, setEditedMessage] = useState('Bonjour !'); // Texte message à éditer
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [showEditContact, setShowEditContact] = useState(false);
+    const [showConfirmBlock, setShowConfirmBlock] = useState(false);
+    const [showConfirmSignal, setShowConfirmSignal] = useState(false);
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+    const [showMessageMenu, setShowMessageMenu] = useState(false);
+    const [showSearchInput, setShowSearchInput] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showConfirmDeleteMessage, setShowConfirmDeleteMessage] = useState(false);
+    const [showEditMessageModal, setShowEditMessageModal] = useState(false);
+    const [editedMessage, setEditedMessage] = useState('Bonjour !');
 
-    // Références DOM pour détecter clics hors menu/modaux et gérer le focus
-    const fileInputRef = useRef(null); // Input type file caché
-    const menuRef = useRef(null); // Référence menu options contact
-    const buttonRef = useRef(null); // Bouton qui ouvre le menu options contact
-    const messageMenuButtonRef = useRef(null); // Bouton qui ouvre menu options message
-    const messageMenuRef = useRef(null); // Menu options message
+    // Nouvel état pour menu appel audio/vidéo
+    const [showCallMenu, setShowCallMenu] = useState(false);
 
-    // Données fictives du contact affiché
+    // Références pour gérer clic hors menus
+    const fileInputRef = useRef(null);
+    const menuRef = useRef(null);
+    const buttonRef = useRef(null);
+    const messageMenuButtonRef = useRef(null);
+    const messageMenuRef = useRef(null);
+    const callMenuRef = useRef(null);
+    const callButtonRef = useRef(null);
+
+    // Contact fictif
     const contact = {
         name: "Jean Dupont",
         image: "https://randomuser.me/api/portraits/men/32.jpg",
         phoneNumbers: ["+33 6 12 34 56 78", "+33 1 23 45 67 89"],
     };
 
-    // Hook useEffect pour fermer le menu contact si clic en dehors
+    // Fermeture menu options contact si clic hors menu
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -60,7 +60,7 @@ function Chat() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Hook useEffect pour fermer le menu message si clic en dehors
+    // Fermeture menu options message si clic hors menu
     useEffect(() => {
         function handleClickOutsideMessageMenu(event) {
             if (
@@ -80,77 +80,81 @@ function Chat() {
         };
     }, [showMessageMenu]);
 
-    // Ouvre modal édition contact et ferme menu options
+    // Fermeture menu appel si clic hors menu
+    useEffect(() => {
+        function handleClickOutsideCallMenu(event) {
+            if (
+                callMenuRef.current &&
+                !callMenuRef.current.contains(event.target) &&
+                callButtonRef.current &&
+                !callButtonRef.current.contains(event.target)
+            ) {
+                setShowCallMenu(false);
+            }
+        }
+        if (showCallMenu) {
+            document.addEventListener('mousedown', handleClickOutsideCallMenu);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutsideCallMenu);
+        };
+    }, [showCallMenu]);
+
+    // Handlers menu contact
     function handleEditClick() {
         setShowEditContact(true);
         setMenuOpen(false);
     }
-
-    // Ouvre modal confirmation blocage contact
     function handleBlockClick() {
         setShowConfirmBlock(true);
         setMenuOpen(false);
     }
-
-    // Ouvre modal confirmation signalement contact
     function handleReportClick() {
         setShowConfirmSignal(true);
         setMenuOpen(false);
     }
-
-    // Ouvre modal confirmation suppression contact
     function handleDeleteClick() {
         setShowConfirmDelete(true);
         setMenuOpen(false);
     }
 
-    // Ouvre modal confirmation suppression message
+    // Handlers menu message
     function handleDeleteMessageClick() {
         setShowConfirmDeleteMessage(true);
         setShowMessageMenu(false);
     }
-
-    // Ouvre modal édition message et initialise le texte à éditer
     function handleEditMessageClick() {
         setShowEditMessageModal(true);
         setShowMessageMenu(false);
         setEditedMessage('Bonjour !');
     }
 
-    // Ferme modal suppression contact
+    // Fermetures modaux
     function closeConfirmDeleteModal() {
         setShowConfirmDelete(false);
     }
-
-    // Ferme modal suppression message
     function closeConfirmDeleteMessageModal() {
         setShowConfirmDeleteMessage(false);
     }
-
-    // Ferme modal signalement contact
     function closeConfirmSignalModal() {
         setShowConfirmSignal(false);
     }
-
-    // Ferme modal édition message
     function closeEditMessageModal() {
         setShowEditMessageModal(false);
     }
 
-    // Valide la modification du message (affiche alert ici, à remplacer par logique réelle)
+    // Validation édition message (placeholder)
     function validateEditMessage() {
         alert(`Message modifié : ${editedMessage}`);
         closeEditMessageModal();
     }
 
-    // Simule le clic sur input type file caché pour ajout fichier
+    // Gestion input fichier
     function handlePaperclipClick() {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     }
-
-    // Gère la sélection de fichier dans le input file
     function handleFileChange(event) {
         const files = event.target.files;
         if (files.length > 0) {
@@ -158,24 +162,30 @@ function Chat() {
         }
     }
 
+    // Gestion menu appel
+    const handleCallClick = () => {
+        setShowCallMenu(prev => !prev);
+        setMenuOpen(false);
+    };
+    const handleCallOptionClick = (type) => {
+        alert(`Démarrage appel ${type}`);
+        setShowCallMenu(false);
+    };
+
     return (
         <div className="col-md-8 col-12 chatWindow d-flex flex-column p-0">
-            {/* Header de la fenêtre de chat avec infos contact et actions */}
+            {/* Header chat */}
             <div className="chat__header w-100 px-3 py-2 d-flex align-items-center justify-content-between">
                 <div className="d-flex align-items-center gap-2">
-                    {/* Avatar du contact */}
                     <img src={contact.image} alt="Profil" className="chat__avatar" />
                     <div>
-                        {/* Nom du contact */}
-                        <div className="chat__name fw-bold">Jean Dupont</div>
-                        {/* Statut en ligne */}
+                        <div className="chat__name fw-bold">{contact.name}</div>
                         <div className="chat__status" style={{ fontSize: "12px" }}>en ligne</div>
                     </div>
                 </div>
 
-                {/* Actions du header : recherche, appel, options */}
                 <div className="d-flex align-items-center gap-3 position-relative">
-                    {/* Bouton recherche avec tooltip */}
+                    {/* Recherche */}
                     <div className="tooltip-wrapper">
                         <BsSearch
                             size={20}
@@ -185,8 +195,6 @@ function Chat() {
                         />
                         <span className="tooltip-text">Rechercher</span>
                     </div>
-
-                    {/* Champ de recherche affiché conditionnellement */}
                     {showSearchInput && (
                         <input
                             type="text"
@@ -199,13 +207,52 @@ function Chat() {
                         />
                     )}
 
-                    {/* Icône appel vidéo */}
-                    <div className="tooltip-wrapper">
-                        <MdVideoCall size={24} className="icon" style={{ cursor: 'pointer' }} />
+                    {/* Icône appel */}
+                    <div className="tooltip-wrapper" style={{ position: 'relative' }}>
+                        <MdVideoCall
+                            size={24}
+                            className="icon"
+                            style={{ cursor: 'pointer' }}
+                            onClick={handleCallClick}
+                            ref={callButtonRef}
+                        />
                         <span className="tooltip-text">Appel</span>
+
+                        {showCallMenu && (
+                            <div
+                                ref={callMenuRef}
+                                className="call-menu"
+                                style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    right: 0,
+                                    backgroundColor: '#2e2f2f',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+                                    zIndex: 1000,
+                                    width: '140px',
+                                    marginTop: '8px',
+                                }}
+                            >
+                                <div
+                                    className="menu-item"
+                                    onClick={() => handleCallOptionClick('audio')}
+                                    style={{ padding: '10px', cursor: 'pointer', color: 'white' }}
+                                >
+                                    Appel Audio
+                                </div>
+                                <div
+                                    className="menu-item"
+                                    onClick={() => handleCallOptionClick('vidéo')}
+                                    style={{ padding: '10px', cursor: 'pointer', color: 'white' }}
+                                >
+                                    Appel Vidéo
+                                </div>
+                            </div>
+                        )}
                     </div>
 
-                    {/* Bouton menu options contact */}
+                    {/* Menu options contact */}
                     <div className="tooltip-wrapper">
                         <MdMoreVert
                             ref={buttonRef}
@@ -217,7 +264,6 @@ function Chat() {
                         <span className="tooltip-text">Options</span>
                     </div>
 
-                    {/* Modal édition contact */}
                     {showEditContact && (
                         <EditContactModal
                             contact={contact}
@@ -225,11 +271,8 @@ function Chat() {
                         />
                     )}
 
-                    {/* Modal confirmation blocage contact */}
                     <ConfirmBlockModal show={showConfirmBlock} onClose={() => setShowConfirmBlock(false)} />
-                    {/* Modal confirmation signalement contact */}
                     <ConfirmSignal show={showConfirmSignal} onClose={closeConfirmSignalModal} />
-                    {/* Modal confirmation suppression contact */}
                     <ConfirmSupprContact
                         show={showConfirmDelete}
                         onClose={closeConfirmDeleteModal}
@@ -239,7 +282,6 @@ function Chat() {
                         }}
                     />
 
-                    {/* Menu déroulant options contact */}
                     {menuOpen && (
                         <div ref={menuRef} className="more-menu">
                             <div className="menu-item" onClick={handleEditClick}><MdEdit /> Modifier le contact</div>
@@ -270,10 +312,9 @@ function Chat() {
                 onValidate={validateEditMessage}
             />
 
-            {/* Corps de la discussion avec messages */}
+            {/* Corps discussion */}
             <div className="chat__body flex-grow-1 p-3 overflow-auto d-flex flex-column gap-2">
-
-                {/* Message reçu avec bouton options */}
+                {/* Message reçu avec menu options */}
                 <div className="message received" style={{ position: 'relative' }}>
                     <button
                         ref={messageMenuButtonRef}
@@ -296,10 +337,8 @@ function Chat() {
                         </div>
                     </button>
 
-                    {/* Texte du message */}
                     <p>{editedMessage}</p>
 
-                    {/* Menu options message */}
                     {showMessageMenu && (
                         <div
                             ref={messageMenuRef}
@@ -321,7 +360,7 @@ function Chat() {
                     )}
                 </div>
 
-                {/* Autres messages exemples */}
+                {/* Messages exemples */}
                 <div className="message sent"><p>Salut, ça va ?</p></div>
                 <div className="message received">
                     <p>Oui super, regarde cette image :</p>
@@ -334,24 +373,20 @@ function Chat() {
                 <div className="message sent"><p>Parfait, merci !</p></div>
             </div>
 
-            {/* Footer avec emoji, ajout fichier et champ texte */}
+            {/* Footer chat */}
             <div className="chat__footer d-flex p-3 align-items-center gap-2">
-                {/* Bouton emoji */}
                 <div className="tooltip-wrapper">
                     <BsEmojiSmile size={44} className="icon clickable" style={{ cursor: 'pointer' }} />
                     <span className="tooltip-text2">Emoji</span>
                 </div>
 
-                {/* Bouton ajout fichier */}
                 <div className="tooltip-wrapper">
                     <FiPaperclip size={44} className="icon clickable" onClick={handlePaperclipClick} style={{ cursor: 'pointer' }} />
                     <span className="tooltip-text2">Ajouter un fichier</span>
                 </div>
 
-                {/* Input file caché déclenché par le bouton ci-dessus */}
                 <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} />
 
-                {/* Champ texte pour écrire message */}
                 <input type="text" className="form-control me-2" placeholder="Tapez un message" />
                 <button className="btn btn-success">Envoyer</button>
             </div>
