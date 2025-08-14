@@ -17,10 +17,13 @@ class ContactsUtilisateursFactory extends Factory
      */
     public function definition(): array
     {
+        // Récupérer un utilisateur aléatoire
+        $utilisateur = Utilisateurs::inRandomOrder()->first();
+
         return [
             'nom' => $this->faker->lastName(),
             'prenom' => $this->faker->firstName(),
-            'numPhone' => $this->faker->numerify('##########'),
+            'numPhone' => $utilisateur->telephone,
             // Pour la clé étrangère, on choisit un utilisateur existant aléatoirement
             'utilisateurPossedantContact_id' => Utilisateurs::inRandomOrder()->first()->id ?? Utilisateurs::factory(),
         ];

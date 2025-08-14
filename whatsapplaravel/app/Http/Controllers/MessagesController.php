@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Carbon;
+
 use App\Models\Messages;
 use App\Models\Utilisateurs;
 use Illuminate\Http\Request;
@@ -52,26 +55,48 @@ class MessagesController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(
-            [
-                'contenues' => 'required',
-                'typeMessage' => 'required',
-                'dateMessage' => 'required | date',
-                'utilisateurEnvoyeurMessage_id' => 'required|exists:utilisateurs,id',
-                'utilisateurReceveurMessage_id' => 'required|exists:utilisateurs,id',
-            ]
-        );
+        // Validation de base
+        $request->validate([
+            'typeMessage' => 'required|in:texte,fichier',
+            'utilisateurEnvoyeurMessage_id' => 'required|exists:utilisateurs,id',
+            'utilisateurReceveurMessage_id' => 'required|exists:utilisateurs,id',
 
-        // Vérification personnalisée : envoyeur != receveur
+            // On verifie si c'est type "text" ou "fichier"
+            'contenues' => $request->typeMessage === 'texte' ? 'required|string' : 'nullable',
+            'fichierMessage' => $request->typeMessage === 'fichier' ? 'required|image|mimes:jpeg,png,jpg,gif,svg|' : 'nullable'
+        ]);
+
+        // on verifie si l'envoyeur est different de receveur
         if ($request->utilisateurEnvoyeurMessage_id == $request->utilisateurReceveurMessage_id) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['utilisateurReceveurMessage_id' => 'L\'envoyeur et le receveur ne peuvent pas être la même personne.']);
         }
 
-        Messages::create($request->all());
-        return redirect()->route('messages.index')->with('success', 'message ajouter avec succès');
+        $data = [
+            'typeMessage' => $request->typeMessage,
+            'statusMessage' => 'non_lus',
+            'dateMessage' => Carbon::now(),
+            'utilisateurEnvoyeurMessage_id' => $request->utilisateurEnvoyeurMessage_id,
+            'utilisateurReceveurMessage_id' => $request->utilisateurReceveurMessage_id,
+        ];
+
+        if ($request->typeMessage === 'texte') {
+            $data['contenues'] = $request->contenues;
+            $data['fichierMessage'] = null;
+        } else {
+            $fileName = time() . '_' . $request->file('fichierMessage')->getClientOriginalName();
+            $request->file('fichierMessage')->move(public_path('imagesMessages'), $fileName);
+
+            $data['fichierMessage'] = $fileName;
+            $data['contenues'] = null;
+        }
+
+        Messages::create($data);
+
+        return redirect()->route('messages.index')->with('success', 'Message ajouté avec succès');
     }
+
 
     /**
      * Display the specified resource.
@@ -98,28 +123,56 @@ class MessagesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate(
-            [
-                'contenues' => 'required',
-                'typeMessage' => 'required',
-                'dateMessage' => 'required | date',
-                'utilisateurEnvoyeurMessage_id' => 'required|exists:utilisateurs,id',
-                'utilisateurReceveurMessage_id' => 'required|exists:utilisateurs,id',
-            ]
-        );
+        // Validation dynamique
+        $request->validate([
+            'typeMessage' => 'required|in:texte,fichier',
+            'statusMessage' => 'required',
+            'utilisateurEnvoyeurMessage_id' => 'required|exists:utilisateurs,id',
+            'utilisateurReceveurMessage_id' => 'required|exists:utilisateurs,id',
+            'contenues' => $request->typeMessage === 'texte' ? 'required|string' : 'nullable',
+            'fichierMessage' => $request->typeMessage === 'fichier' && $request->hasFile('fichierMessage')
+                ? 'required|image|mimes:jpeg,png,jpg,gif,svg|'
+                : 'nullable'
+        ]);
 
-        // Vérification personnalisée : envoyeur != receveur
+        // Vérification : envoyeur ≠ receveur
         if ($request->utilisateurEnvoyeurMessage_id == $request->utilisateurReceveurMessage_id) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['utilisateurReceveurMessage_id' => 'L\'envoyeur et le receveur ne peuvent pas être la même personne.']);
         }
 
-
         $message = Messages::findOrFail($id);
-        $message->update($request->all());
-        return redirect()->route('messages.index')->with('success', 'message modifier avec succès');
+
+        $data = [
+            'typeMessage' => $request->typeMessage,
+            'statusMessage' => $request->statusMessage,
+            'utilisateurEnvoyeurMessage_id' => $request->utilisateurEnvoyeurMessage_id,
+            'utilisateurReceveurMessage_id' => $request->utilisateurReceveurMessage_id,
+        ];
+
+        if ($request->typeMessage === 'texte') {
+            $data['contenues'] = $request->contenues;
+            $data['fichierMessage'] = $message->fichierMessage; // on garde l'ancien fichier s'il existait
+        } else {
+            // Si un nouveau fichier est uploadé
+            if ($request->hasFile('fichierMessage')) {
+                $fileName = time() . '_' . $request->file('fichierMessage')->getClientOriginalName();
+                $request->file('fichierMessage')->move(public_path('imagesMessages'), $fileName);
+
+                $data['fichierMessage'] = $fileName;
+            } else {
+                // Si aucun nouveau fichier, on garde l'ancien
+                $data['fichierMessage'] = $message->fichierMessage;
+            }
+            $data['contenues'] = null;
+        }
+
+        $message->update($data);
+
+        return redirect()->route('messages.index')->with('success', 'Message modifié avec succès');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -127,7 +180,18 @@ class MessagesController extends Controller
     public function destroy($id)
     {
         $message = Messages::findOrFail($id);
+
+        // Si le message contient un fichier, on le supprime du dossier public/imagesMessages
+        if ($message->typeMessage === 'fichier' && $message->fichierMessage) {
+            $filePath = public_path('imagesMessages/' . $message->fichierMessage);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+            }
+        }
+
+        // Supprimer l'enregistrement en BDD
         $message->delete();
-        return redirect()->route('messages.index')->with('success', 'message supprimer avec succès');
+
+        return redirect()->route('messages.index')->with('success', 'Message supprimé avec succès');
     }
 }

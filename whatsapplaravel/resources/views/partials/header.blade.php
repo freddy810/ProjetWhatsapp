@@ -15,9 +15,6 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{route('appels.index')}}">Appels</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{route('contactsUtilisateurs.index')}}">Contact des utilisateurs</a>
-                </li>
 
                 @if(session('utilisateur'))
                 <li class="nav-item">

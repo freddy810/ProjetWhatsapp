@@ -425,3 +425,21 @@
 .edit-profile-modal form .form-control::placeholder {
     color: #bbbbbb;
 }
+
+.btn-contact {
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-contact:hover,
+.btn-contact:focus {
+    background-color: #e6f0ff;
+    outline: none;
+}

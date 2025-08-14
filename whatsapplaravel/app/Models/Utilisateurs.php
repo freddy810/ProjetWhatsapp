@@ -29,9 +29,4 @@ class Utilisateurs extends Model
     {
         return $this->hasMany(Appels::class, 'utilisateurReceveur_id');
     }
-
-    public function contactsUtilisateursPosseder()
-    {
-        return $this->hasMany(ContactsUtilisateurs::class, 'utilisateurPossedantContact_id');
-    }
 }

@@ -22,8 +22,6 @@ function Sidebar({ utilisateur }) {
     const [showAddContactModal, setShowAddContactModal] = useState(false);
     const [showAllUsersModal, setShowAllUsersModal] = useState(false);
 
-    const [derniersMessages, setDerniersMessages] = useState({});
-
     const settingsModalRef = useRef(null);
     const logoutModalRef = useRef(null);
 
@@ -91,43 +89,6 @@ function Sidebar({ utilisateur }) {
         navigate('/login');
     };
     const cancelLogout = () => setShowLogoutConfirm(false);
-
-    // Fonction pour récupérer le dernier message via API
-    async function fetchDernierMessage(utilisateur1_id, utilisateur2_id, contactId) {
-        try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/api/messages/dernier-message/${utilisateur1_id}/${utilisateur2_id}`
-            );
-            const data = await response.json();
-
-            if (data.success) {
-                setDerniersMessages(prev => ({
-                    ...prev,
-                    [contactId]: data.dernier_message_id,
-                }));
-            } else {
-                setDerniersMessages(prev => ({
-                    ...prev,
-                    [contactId]: null,
-                }));
-            }
-        } catch (error) {
-            console.error("Erreur fetch dernier message :", error);
-            setDerniersMessages(prev => ({
-                ...prev,
-                [contactId]: null,
-            }));
-        }
-    }
-
-    // Appeler fetchDernierMessage pour chaque contact à chaque chargement ou mise à jour des contacts/utilisateur
-    useEffect(() => {
-        if (contacts && utilisateur?.id) {
-            contacts.forEach(contact => {
-                fetchDernierMessage(utilisateur.id, contact.id, contact.id);
-            });
-        }
-    }, [contacts, utilisateur]);
 
     return (
         <div className="col-md-4 col-12 sidebar d-flex justify-content-around h-100 p-0">
@@ -252,25 +213,46 @@ function Sidebar({ utilisateur }) {
                         )}
 
                         {contacts.map((contact) => (
-                            <div key={contact.id} className="chat d-flex align-items-center p-3">
-                                <img
-                                    src={contact.possedeurMessage?.photoProfil
-                                        ? `http://127.0.0.1:8000/images/profils/${contact.possedeurMessage.photoProfil}`
-                                        : "https://i.pravatar.cc/40?img=1"}
-                                    alt="avatar"
-                                    className="rounded-circle me-3"
-                                />
+                            <button
+                                key={contact.id}
+                                className="chat d-flex align-items-center p-3 btn-contact"
+                                onClick={() => {
+                                    // ici tu peux gérer l'action au clic, par exemple naviguer vers la discussion
+                                    console.log('Contact cliqué:', contact);
+                                    // navigate(`/chat/${contact.id}`) si tu utilises react-router
+                                }}
+                                type="button"
+                            >
+                                {/* Cercle avec initiale */}
+                                <div
+                                    style={{
+                                        width: 40,
+                                        height: 40,
+                                        borderRadius: '50%',
+                                        backgroundColor: '#007bff',
+                                        color: 'white',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontWeight: 'bold',
+                                        fontSize: '1.25rem',
+                                        marginRight: 12,
+                                        userSelect: 'none',
+                                    }}
+                                >
+                                    {contact.nom ? contact.nom.charAt(0).toUpperCase() : '?'}
+                                </div>
+
                                 <div>
-                                    <h6 className="mb-0">{contact.nom} {contact.prenom}</h6>
+                                    <h6 className="mb-0">{contact.nom}</h6>
                                     <small className="last_chat">
-                                        {derniersMessages[contact.id]
-                                            ? `Dernier message ID : ${derniersMessages[contact.id]}`
-                                            : "Pas de message"}
+                                        {contact.numPhone ? contact.numPhone : "Numéro non disponible"}
                                     </small>
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
+
                 </div>
 
                 {showEditProfile && (

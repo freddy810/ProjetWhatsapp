@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->string('contenues');
+            $table->string('contenues')->nullable();
             $table->string('typeMessage');
-            $table->date('dateMessage');
+            $table->string('statusMessage');
+            $table->dateTime('dateMessage');
+            $table->string('fichierMessage')->nullable();
             $table->timestamps();
         });
     }

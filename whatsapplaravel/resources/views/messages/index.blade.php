@@ -36,6 +36,8 @@
                   <th>ID</th>
                   <th>CONTENUES</th>
                   <th>TYPES</th>
+                  <th>FICHIER</th>
+                  <th>STATUS</th>
                   <th>DATE MESSAGE</th>
                   <th>ENVOYEUR</th>
                   <th>RECEVEUR</th>
@@ -47,6 +49,8 @@
                   <td>{{$message->id}}</td>
                   <td>{{$message->contenues}}</td>
                   <td>{{$message->typeMessage}}</td>
+                  <td>{{$message->fichierMessage}}</td>
+                  <td>{{$message->statusMessage}}</td>
                   <td>{{$message->dateMessage}}</td>
                   <td>{{$message->envoyeurMessage->nom}}</td>
                   <td>{{$message->receveurMessage->nom}}</td>
