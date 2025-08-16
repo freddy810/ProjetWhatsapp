@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Messages extends Model
 {
     use HasFactory;
-    protected $fillable = ['contenues', 'typeMessage', 'dateMessage', 'utilisateurReceveurMessage_id', 'utilisateurEnvoyeurMessage_id'];
+    protected $fillable = ['contenues', 'typeMessage', 'dateMessage', 'fichierMessage', 'statusMessage', 'utilisateurReceveurMessage_id', 'utilisateurEnvoyeurMessage_id'];
 
 
     public function envoyeurMessage()

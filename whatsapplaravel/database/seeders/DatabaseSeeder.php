@@ -19,8 +19,6 @@ class DatabaseSeeder extends Seeder
     {
         Utilisateurs::factory(5)->create();
 
-        ContactsUtilisateurs::factory(5)->create();
-
         Messages::factory(5)->create();
 
         Appels::factory(5)->create();

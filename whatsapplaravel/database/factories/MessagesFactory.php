@@ -25,6 +25,7 @@ class MessagesFactory extends Factory
         return [
             'contenues' => $this->faker->sentence(),
             'typeMessage' => $this->faker->randomElement(['texte', 'audio', 'video', 'fichier']),
+            'statusMessage' => $this->faker->randomElement(['lus', 'non_lus']),
             'dateMessage' => $this->faker->date('Y-m-d'),
             'utilisateurEnvoyeurMessage_id' => $envoyeurId,
             'utilisateurReceveurMessage_id' => $receveurId,
